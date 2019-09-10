@@ -7,6 +7,15 @@ class InitManager{
         InitManager.app = app
         InitManager.InitLoadRouters()
         InitManager.loadHttpException()
+        InitManager.loadConfig()
+    }
+
+
+    //导入查询是什么环境
+    static loadConfig(path = '') {
+        const configPath = path || process.cwd() + '/config/config.js'
+        const config = require(configPath)
+        global.config = config
     }
 
     static InitLoadRouters() {  
