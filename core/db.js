@@ -15,10 +15,13 @@ const sequelize = new Sequelize(dbName,user,password,{
     logging:true,//显示sql具体操作为true
     timezone:'+08:00',//北京
     define:{
-
+         paranoid:true,//添加 deletedAt
+        underscored:true//把驼峰命名改为下划线
     }
 })
 
+    sequelize.sync()
+
 module.exports = {
-    db:sequelize //修改名称
+    sequelize //修改名称
 }

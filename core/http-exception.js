@@ -8,7 +8,7 @@ class HttpException extends Error{
     }
 }
 
-class ParameterExcepiton extends HttpException{
+class ParameterException extends HttpException{
     constructor(msg, errorCode){
         super()
         this.errorCode = errorCode || 10000
@@ -19,5 +19,5 @@ class ParameterExcepiton extends HttpException{
 
 module.exports = {
     HttpException,
-    ParameterExcepiton
+    ParameterException
 }

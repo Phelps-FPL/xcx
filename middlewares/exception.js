@@ -7,10 +7,14 @@ const catchError = async (ctx,next)=>{
     catch(error){
         //开发环境
         //生产环境
-        if(global.config.enviroment === 'dev'){
+        
+        const isHttpException = error instanceof HttpException
+        const isDev = global.config.environment === 'dev'
+        //调式错误的话在开发环境下而且不是Http错误才抛出该错误
+        if(isDev && !isHttpException){
             throw error
         }
-        if(error instanceof HttpException){
+        if(isHttpException){
             ctx.body = {
                 msg: error.msg,//Error构造函数传递进去的,因为message是Error里的一个参数,取得时候可以这样
                 error_code:error.errorCode,
