@@ -1,4 +1,6 @@
-const {LinValidator,Rule} = require('../../core/lin-validator')
+const {LinValidator,Rule} = require('../../core/lin-validator-v2')
+const {User} = require('../models/user')
+const {LoginType} = require('../lib/enum')
     // 使用该项目的invalidator校验器
     // 判断是否是正整数的校验器
 class PositiveIntegerValidator extends LinValidator{
@@ -24,7 +26,7 @@ class RegisterValidator extends LinValidator {
             new Rule('matches','密码不符合规范','^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]')//Linvalidator定义了判断密码规范
         ],
         this.password2 = this.password1
-        this.nickName = [
+        this.nickname = [
             new Rule('isLength','昵称最少3个字符',{
                 min:3, 
                 max:32
@@ -39,11 +41,57 @@ class RegisterValidator extends LinValidator {
             throw new Error('两个密码必须相同')
         }
     }
+        //验证邮箱是否重复
+        async validateEmail(vals){
+            const email = vals.body.email
+            const user = await User.findOne({//使用的是Sequlize的内置方法
+                where:{
+                    email:email
+                }
+            })
+            if(user){
+                throw new Error('email已存在')
+            }
+        }
 }
+
+        //令牌token的验证器
+    class TokenValidator extends LinValidator {
+        constructor(){
+            //内容账号
+            super()
+            this.account = [
+                new Rule('isLength','不符合账号规则',{
+                        min:4,
+                        max:32
+                })
+            ]
+            //密码
+            this.secret =[
+                //isOptional该项目自己封装的函数
+                new Rule('isOptional'),
+                new Rule('isLength','至少6个字符',{
+                    min:6,
+                    max:128
+                })
+            ]                           
+        }
+            //设置用户登陆方式的校验器
+        validateLoginType(vals){
+        if(!vals.body.type){
+            throw new Error('type是必须参数')
+        }
+        if(!LoginType.isThisType(vals.body.type)){
+            throw new Error('type参数不合法')
+        }
+            }
+    }
+    
 
    
 
 module.exports = {
     PositiveIntegerValidator,
-    RegisterValidator
+    RegisterValidator,
+    TokenValidator
 }

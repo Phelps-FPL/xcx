@@ -20,7 +20,9 @@ const sequelize = new Sequelize(dbName,user,password,{
     }
 })
 
-    sequelize.sync()
+    sequelize.sync({
+        force:true
+    })
 
 module.exports = {
     sequelize //修改名称
