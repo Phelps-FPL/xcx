@@ -4,7 +4,26 @@ const {sequelize} = require('../../core/db')//导入sequelize实例  :db,重命�
 const {Sequelize,Model} = require('sequelize')
 
 class User extends Model{
-
+    // 定义验证数据库邮箱,密码和用户输入的是否相同
+    static async verifyEmailPassword(email,plainPassword){
+        const user = await User.findOne({
+            where:{
+                email
+            }
+        })
+        //user不存在
+        if(!user){
+            throw new global.errs.AuthFailed('账号不存在')
+        }
+        //验证密码是否相同,数据库的加了密
+        //不能使用user.password == plainPassword
+        const correct =bcrypt.compareSync(plainPassword,user.password)
+        //密码不匹配
+        if(!correct){
+            throw new global.errs.AuthFailed('密码不正确')
+        }
+        return user
+    }   
 }
 
 User.init({

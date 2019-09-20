@@ -21,7 +21,7 @@ const sequelize = new Sequelize(dbName,user,password,{
 })
 
     sequelize.sync({
-        force:true
+        force:false //为ture时每次发送都会删除数据库
     })
 
 module.exports = {
