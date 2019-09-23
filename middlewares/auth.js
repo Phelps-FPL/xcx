@@ -2,8 +2,11 @@ const basicAuth =  require('basic-auth')
 const jwt = require('jsonwebtoken')
 
 class Auth {
-    constructor(){
-
+    constructor(level){
+        //权限, 用户8  管理员16
+        this.level = level || 1
+        Auth.USER = 8
+        Auth.ADMIN = 16 
     }
     get m(){
         return async(ctx,next)=>{ 
@@ -24,6 +27,12 @@ class Auth {
                     
                 }
                 throw new global.errs.Forbbiden(errMsg)
+            }
+
+            if(decode.scope < this.level){
+                errMsg = '权限不足'
+                throw new global.errs.Forbbiden(errMsg)
+
             }
             //uid,scope
             ctx.auth ={

@@ -24,6 +24,21 @@ class User extends Model{
         }
         return user
     }   
+    //获取openid 方法
+    static async getUserByOpenid(openid){
+        const  user = await User.findOne({
+            where:{
+                openid
+            }
+        })
+        return user
+    }
+    //新增用户的方法
+    static async registerByOpenid(openid){
+        return await User.create({
+            openid
+        })
+    }
 }
 
 User.init({
