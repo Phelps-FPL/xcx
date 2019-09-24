@@ -1,5 +1,5 @@
 const Router = require('koa-router')
-const {TokenValidator} = require('../../validators/validator')
+const {TokenValidator,NotEmptyValidator} = require('../../validators/validator')
 const {LoginType} = require('../../lib/enum')
 const {User} = require('../../models/user') 
 const {generateToken} = require('../../../core/util')
@@ -34,6 +34,16 @@ router.post('/',async (ctx)=>{
     }
     ctx.body={
         token
+    }
+})
+//验证令牌的接口
+router.post('/verify',async(ctx)=>{
+    //验证token 不为空
+    const v = await new NotEmptyValidator().validate(ctx)
+    //验证是否合法,合法则获取
+    const result =  Auth.verifyToken(v.get('body.token'))
+    ctx.body = {
+        result
     }
 })
 //验证账号密码是否错误

@@ -41,13 +41,24 @@ class Auth {
             }
 
             await next()
-            //kia Node.js
+            //koa Node.js
             //node.js的封装对象req
             // ctx.request koa request
             //token 检测
             //token 开发者 传递令牌
             //前后台约定token在哪携带, body,header
             //HTTP里规定HttpBasicAuth
+        
+        }
+    }
+    //验证token是否正确
+    static verifyToken(token){
+        try{
+        jwt.verify(token,global.config.security.secretKey)
+         return true   
+        }
+        catch{
+            return false
         }
     }
 }
