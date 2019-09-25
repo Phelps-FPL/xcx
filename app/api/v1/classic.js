@@ -7,10 +7,15 @@ const {Auth} = require('../../../middlewares/auth')
 const {PositiveIntegerValidator} = require('../../validators/validator')
 
 router.post('/latest',new Auth().m, async (ctx,next)=>{
-    ctx.body = ctx.auth.uid
-    //权限  限制token 角色
-    //分级 scope   设置权限9  小于9不能访问, 大于可以访问
-
+    
+    //获取期刊最新一期
+    const flow = Flow.findOne({
+      // 排序 正序和倒序index
+      order:[
+        ['index','DESC']
+      ]
+    })
+    ctx.body = flow
 })
 
 module.exports = router 

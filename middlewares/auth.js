@@ -54,12 +54,14 @@ class Auth {
     //验证token是否正确
     static verifyToken(token){
         try{
-        jwt.verify(token,global.config.security.secretKey)
-         return true   
+            jwt.verify(token, 
+                global.config.security.secretKey)
+            return true
         }
-        catch{
+        catch (error){
             return false
         }
+
     }
 }
 module.exports = {
