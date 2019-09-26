@@ -33,7 +33,7 @@ router.post('/',async (ctx)=>{
             throw new global.errs.ParameterException('没有相应的处理函数')
     }
     ctx.body={
-        token
+        is_valid:result
     }
 })
 //验证令牌的接口

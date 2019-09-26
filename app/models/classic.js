@@ -3,7 +3,7 @@ const {
     Sequelize,
     Model
 } = require('sequelize')
-// music moive sentence
+// music movie sentence
 //共同字段  image,title,content,fav_nums,pubdate发布日期 type分类
 //url music
 //base 基类存放共同字段， 子类各自不同，
@@ -16,12 +16,12 @@ const classicFields = {
     type: Sequelize.TINYINT,
 }
 // 电影
-class Moive extends Model {
+class Movie extends Model {
 
 }
-Moive.init(classicFields,{
+Movie.init(classicFields,{
     sequelize,
-    tableName:'moive'
+    tableName:'movie'
 })
 // 句子表
 class Sentence extends Model {
@@ -32,21 +32,21 @@ Sentence.init(classicFields,{
     tableName:'sentence'
 })
 // 音乐表
-class music extends Model {
+class Music extends Model {
 
 }
 // 音乐独有的链接属性
 const musicFields = Object.assign({
-    url:sequelize.STRING
+    url:Sequelize.STRING
 
 },classicFields) 
 Music.init(musicFields,{
     sequelize,
-    tableName:'sentence'
+    tableName:'music'
 })
 
 module.exports = {
-    Moive,
+    Movie,
     Sentence,
-    Måusic
+    Music
 }

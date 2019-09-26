@@ -95,6 +95,23 @@ class RegisterValidator extends LinValidator {
             ]
         }
     }
+    //对类型判断进行封装
+    function checkType(vals){
+        if(!vals.body.type){
+            throw new Error('type是必须参数')
+        }
+        if(!LoginType.isThisType(vals.body.type)){
+            throw new Error('type参数不合法')
+        }
+            }
+
+    //点赞的校验器
+    class LikeValidator extends PositiveIntegerValidator{
+        constructor(){
+            super()
+            this.validateType = checkType
+        }
+    }
 
    
 
@@ -102,5 +119,6 @@ module.exports = {
     PositiveIntegerValidator,
     RegisterValidator,
     TokenValidator,
-    NotEmptyValidator
+    NotEmptyValidator,
+    LikeValidator
 }
