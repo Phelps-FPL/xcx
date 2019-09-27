@@ -1,6 +1,6 @@
 const {LinValidator,Rule} = require('../../core/lin-validator-v2')
 const {User} = require('../models/user')
-const {LoginType} = require('../lib/enum')
+const {LoginType,ArtType} = require('../lib/enum')
     // 使用该项目的invalidator校验器
     // 判断是否是正整数的校验器
 class PositiveIntegerValidator extends LinValidator{
@@ -8,6 +8,7 @@ class PositiveIntegerValidator extends LinValidator{
             super()   
             this.id = [//可以定义多个规则
                  //Rule是校验规则,要实例化
+                 //自动把字符串转型num
                 new Rule('isInt','需要是正整数',{min:1}) //3个参数,第一个是满足规则,第二个是不满足时提示规则,第三可选参数  
             ]   
         }
@@ -86,6 +87,7 @@ class RegisterValidator extends LinValidator {
         }
             }
     }
+    
     //校验验证token不能为空
     class NotEmptyValidator extends LinValidator{
         constructor(){
@@ -95,22 +97,62 @@ class RegisterValidator extends LinValidator {
             ]
         }
     }
+    //类型检测
+    class Checker{
+        constructor(type){
+            this.enumType = type
+        }
+        // /对类型判断进行封装
+        check(vals){
+            let type = vals.body.type ||  vals.path.type
+            if(!type){ 
+                throw new Error('type是必须参数')
+            }
+            type = parseInt(type)
+            if(!this.enumType.isThisType(type)){
+                throw new Error('type参数不合法')
+            }
+                }
+    }
+
     //对类型判断进行封装
     function checkType(vals){
-        if(!vals.body.type){
+        let type = vals.body.type ||  vals.path.type
+        if(!type){ 
             throw new Error('type是必须参数')
         }
-        if(!LoginType.isThisType(vals.body.type)){
+        type = parseInt(type)
+        if(!LoginType.isThisType(type)){
             throw new Error('type参数不合法')
         }
             }
+    //对Art的类型判断
+    function checkArtType(vals){
+        let type = vals.body.type ||  vals.path.type
+        if(!type){ 
+            throw new Error('type是必须参数')
+        }
+        type = parseInt(type)
+        if(!ArtType.isThisType(type)){
+            throw new Error('type参数不合法')
+        }
+            }
+
+
+    
 
     //点赞的校验器
     class LikeValidator extends PositiveIntegerValidator{
         constructor(){
             super()
-            this.validateType = checkType
+            this.validateType = checkArtType
+            // const checker  = new Checker(ArtType)
+            // this.validateType = checker.check.bind(checker)//把this指向checker
         }
+    }
+    //详情点赞信息校验器
+    class ClassicValidator extends LikeValidator{
+
     }
 
    
@@ -120,5 +162,6 @@ module.exports = {
     RegisterValidator,
     TokenValidator,
     NotEmptyValidator,
-    LikeValidator
+    LikeValidator,
+    ClassicValidator
 }

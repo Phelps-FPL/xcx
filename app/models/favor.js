@@ -1,7 +1,8 @@
 const {sequelize} = require('../../core/db')
 const {
     Sequelize,
-    Model
+    Model,
+    Op
 } = require('sequelize')
 const {Art} = require('./art')
 
@@ -28,7 +29,7 @@ class Favor extends Model{
             type,
             uid
          },{transaction:t})
-        const art = await Art.getData(art_id,type)
+        const art = await Art.getData(art_id,type,false)
         await art.increment('fav_nums',{by:1,transaction:t})//点赞数+1
      })
     }
@@ -53,7 +54,7 @@ class Favor extends Model{
                 force:true,//物理删除,false 软删除,表里还有
                 transaction:t
             })
-           const art = await Art.getData(art_id,type)
+           const art = await Art.getData(art_id,type,false)
            await art.decrement('fav_nums',{by:1,transaction:t})//点赞数-1
         })
     }
@@ -68,7 +69,23 @@ class Favor extends Model{
         })
         return favor?true:false //判断favor有返回true,没有返回false
     }
+    //查询用户所有点赞的期刊
+    static async getMyClassicFavors(uid){
+        // type != 400
+        const arts = Favor.findAll({
+            where:{//排除book的点赞
+                uid,
+                type:{
+                    [Op.not]:400//表示type类型不等于400 sequelize的方法
+                }
+            }
+        })
+        if(!arts){
+            throw new global.errs.NotFound()
+        }
+    }
 }
+    
 
 //点赞表
 Favor.init({

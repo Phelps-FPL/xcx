@@ -16,12 +16,25 @@ const sequelize = new Sequelize(dbName,user,password,{
     timezone:'+08:00',//北京
     define:{
          paranoid:true,//添加 deletedAt
-        underscored:true//把驼峰命名改为下划线
+        underscored:true,//把驼峰命名改为下划线
+        createdAt:'created_at',
+        updatedAt:'updated_at',
+        deletedAt:'deleted_at',
+        underscored:true,
+        freezeTableName:true,
+        scopes:{
+            bh:{
+                attributes:{
+                    exclude:['updated_at','deleted_at','created_at']
+                }
+            }
+        }
+ 
     }
 })
 
     sequelize.sync({
-        force:false //为ture时每次发送都会删除数据库
+        force:false //为true时每次发送都会删除数据库
     })
 
 module.exports = {

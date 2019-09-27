@@ -6,10 +6,8 @@ const {Auth} = require('../../../middlewares/auth')
 const {Flow} =  require('../../models/flow')
 const {Art} =  require('../../models/art')
 const {Favor} =  require('../../models/favor')
-
-
-
-const {PositiveIntegerValidator} = require('../../validators/validator')
+const {PositiveIntegerValidator,
+  ClassicValidator} =  require('@validator')
 
 router.get('/latest',new Auth().m, async (ctx,next)=>{
     
@@ -30,6 +28,77 @@ router.get('/latest',new Auth().m, async (ctx,next)=>{
     art.setDataValue('like_status',likeLatest)
     ctx.body = art
     //思考,  为什么KOA会直接返回art类里的datavalue的值
+})
+
+//获取下一期的接口
+router.get('/:index/next',new Auth().m,async (ctx)=>{
+  const v = await new PositiveIntegerValidator().validate(ctx,{
+    id:'index'//别名id转化为index
+  })
+  const index = v.get('path.index')//因为是从路径上获取参数,所以使用path
+  const flow = await Flow.findOne({
+    where:{
+      index:index + 1 //找的是下一期,所以要+1
+    } 
+  })
+  if(!flow){
+    throw new global.errs.NotFound()
+  }
+  //获取根据id获取实体模型
+  const art = await Art.getData(flow.art_id,flow.type)
+  //获取favor模型的点赞状态
+  const likeNext = await Favor.userLikeIt(flow.art_id,flow.type,ctx.auth.uid)
+  // flow模型添加到art
+  art.setDataValue('index',flow.index)
+  //favor模型点赞状态添加到art
+  art.setDataValue('like_status',likeNext)
+  ctx.body = art
+})
+//上一期的接口
+router.get('/:index/previous',new Auth().m, async (ctx)=>{
+  const v = await new PositiveIntegerValidator().validate(ctx,{
+    id:'index'//别名id转化为index
+  })
+  const index = v.get('path.index')//因为是从路径上获取参数,所以使用path
+  const flow = await Flow.findOne({
+    where:{
+      index:index + -1 //找的是上一期,所以要-1
+    } 
+  })
+  if(!flow){
+    throw new global.errs.NotFound()
+  }
+  //获取根据id获取实体模型
+  const art = await Art.getData(flow.art_id,flow.type)
+  //获取favor模型的点赞状态
+  const likeNext = await Favor.userLikeIt(flow.art_id,flow.type,ctx.auth.uid)
+  // flow模型添加到art
+  art.setDataValue('index',flow.index)
+  //favor模型点赞状态添加到art
+  art.setDataValue('like_status',likeNext)
+  ctx.body = art
+})
+
+//每种期刊的用户点赞信息接口
+router.get('/:type/:id/favor',new Auth().m, async (ctx) => {
+  const v = await new ClassicValidator().validate(ctx)
+  const id = v.get('path.id')
+  const type = parseInt(v.get('path.type'))
+  const art = await Art.getData(id,type)
+  if(!art){//如果期刊不存在
+    throw new global.errs.NotFound()
+  }
+  //获取favor模型的点赞状态
+  const like = await Favor.userLikeIt(id,type,ctx.auth.uid)
+  ctx.body = {
+    fav_nums: art.fav_nums,
+    like_status:like
+  }
+})
+
+//获取用户所以喜欢的列表接口
+router.get('/favor', new Auth().m, async ctx =>{
+    const uid = ctx.auth.uid
 })
 
 module.exports = router 
