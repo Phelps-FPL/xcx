@@ -72,7 +72,7 @@ class Favor extends Model{
     //查询用户所有点赞的期刊
     static async getMyClassicFavors(uid){
         // type != 400
-        const arts = Favor.findAll({
+        const arts =await Favor.findAll({
             where:{//排除book的点赞
                 uid,
                 type:{
@@ -83,6 +83,8 @@ class Favor extends Model{
         if(!arts){
             throw new global.errs.NotFound()
         }
+        // 直接return
+        return await Art.getList(arts)
     }
 }
     
