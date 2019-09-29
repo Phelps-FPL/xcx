@@ -154,6 +154,34 @@ class RegisterValidator extends LinValidator {
     class ClassicValidator extends LikeValidator{
 
     }
+    //搜索校验器
+    class SearchValidator extends LinValidator{
+        constructor(){
+            super()
+            this.q = [//关键字
+                new Rule('isLength','搜索关键词不能为空',{
+                    min:1,
+                    max:16
+                })
+            ]
+            //页数
+            this.start = [ //开始的页数
+                new Rule('isInt','不符合规范',{
+                    min:0,
+                    max:60000
+                }),
+                new Rule('isOptional','',0)
+            ]
+            //每一页的条数
+            this.count = [
+                new Rule('isInt','不符合规范',{
+                    min:1,
+                    max:20
+                }),
+                new Rule('isOptional','',20)
+            ]
+        }
+    }
 
    
 
@@ -163,5 +191,6 @@ module.exports = {
     TokenValidator,
     NotEmptyValidator,
     LikeValidator,
-    ClassicValidator
+    ClassicValidator,
+    SearchValidator
 }
