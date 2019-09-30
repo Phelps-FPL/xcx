@@ -45,7 +45,7 @@ Book.init({
     //业务数据,只需要点赞情况
     fav_nums:{
         type:Sequelize.INTEGER,
-        default:0
+        defaultValue:0
     }
 },{
     sequelize,

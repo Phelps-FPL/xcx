@@ -1,4 +1,5 @@
-const Sequelize = require('sequelize')
+const {Sequelize,Model} = require('sequelize')
+const {unset, clone} = require('lodash')
 //把数据库导入进来减少实例化的代码量
 const {
     dbName,
@@ -36,6 +37,13 @@ const sequelize = new Sequelize(dbName,user,password,{
     sequelize.sync({
         force:false //为true时每次发送都会删除数据库
     })
+    //直接在数据库里进行toJSON方法转换
+    Model.prototype.toJSON =  function () { 
+        let data = clone(this.dataValue)
+        unset(data,'updated_at')
+        unset(data,'created_at')
+        unset(data,'deleted_at')
+     }
 
 module.exports = {
     sequelize //修改名称
