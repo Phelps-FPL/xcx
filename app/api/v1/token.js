@@ -33,7 +33,7 @@ router.post('/',async (ctx)=>{
             throw new global.errs.ParameterException('没有相应的处理函数')
     }
     ctx.body={
-        is_valid:result
+        token
     }
 })
 //验证令牌的接口
@@ -42,9 +42,10 @@ router.post('/verify',async(ctx)=>{
     const v = await new NotEmptyValidator().validate(ctx)
     //验证是否合法,合法则获取
     const result =  Auth.verifyToken(v.get('body.token'))
-    ctx.body = {
-        result
+    ctx.body={
+        is_valid:result
     }
+    
 })
 //验证账号密码是否错误
 async function emailLogin(account, secret){

@@ -8,7 +8,9 @@ const {
 //url music
 //base 基类存放共同字段， 子类各自不同，
 const classicFields = {
-    image:Sequelize.STRING,
+    image:{
+        type:Sequelize.STRING, 
+    },
     content: Sequelize.STRING,
     pubdate: Sequelize.DATEONLY,
     fav_nums:{

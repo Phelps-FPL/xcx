@@ -52,6 +52,7 @@ router.get('/:index/next',new Auth().m,async (ctx)=>{
   art.setDataValue('index',flow.index)
   //favor模型点赞状态添加到art
   art.setDataValue('like_status',likeNext)
+  // art.exclude = ['index','like_status']
   ctx.body = art
 })
 //上一期的接口

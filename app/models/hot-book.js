@@ -23,8 +23,9 @@ class HotBook extends Model{
             where:{
                 art_id:{
                     [Op.in]:ids,
-                    type:400
-                }
+                    
+                },
+                type:400
             },
             group:['art_id'],
             // 数据库语法
@@ -45,7 +46,7 @@ class HotBook extends Model{
                 count = favor.get('count')
             }
         })
-        book.setDataValue('count',count)
+        book.setDataValue('fav_nums',count)
         return book
     }
 }

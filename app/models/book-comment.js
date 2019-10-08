@@ -5,7 +5,9 @@ const {
 } = require('sequelize')
 
 class Comment extends Model{
+
     static async addComment(bookID,content){
+        
         //点赞+1 输入的和数据库的相同评论+1
         const comment = await Comment.findOne({
             where:{

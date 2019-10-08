@@ -73,7 +73,7 @@ class Art{
                     arts = await Sentence.scope(scope).findAll(finder)
                     break
                 case 400:
-    
+
                     break
             }
             return arts
@@ -99,11 +99,25 @@ class Art{
                 art = await Sentence.scope(scope).findOne(finder)
                 break
             case 400:
-
+                const {Book} = require('./book')
+                art = await Book.scope(scope).findOne(finder)
+                if(!art){
+                    art = await Book.create({
+                        id:art_id
+                    })
+                }
+                break
+            default:
                 break
         }
+        //源头改造image地址, 获取静态的地址
+        // 这儿的不要,直接从数据库db修改
+    //     if(art && art.image){
+    //         let imgUrl = art.dataValues.image
+    //         art.dataValues.image = global.config.host + imgUrl
+    //     }
         return art
-    }
+     }
 }
 module.exports = {
     Art
